@@ -1,7 +1,8 @@
 from sre_constants import CATEGORY
 from statistics import quantiles
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from account.models import User
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 
 
@@ -35,7 +36,7 @@ class Product(models.Model):
     discounted_price = models.FloatField()
     description = models.TextField()
     brand = models.CharField(max_length=50)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2, default=None)
+    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
     product_image = models.ImageField(upload_to='productimg')
 
     def __str__(self):
