@@ -47,6 +47,10 @@ def mobile(request, data=None):
         mobile = Product.objects.filter(category='M')
     elif data == 'Sumsing' or data == 'Nokia':
         mobile = Product.objects.filter(category='M').filter(brand=data)
+    elif data == 'Below':
+        mobile = Product.objects.filter(category='M').filter(discounted_price__lt=20000)
+    elif data == 'Above':
+        mobile = Product.objects.filter(category='M').filter(discounted_price__gt=20000)
     return render(request, 'app/mobile.html', {'mobile':mobile})
 
 def login(request):
