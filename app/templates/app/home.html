@@ -103,7 +103,8 @@
   <a href="{% url 'product-detail' l.id %}" class="btn">
     <div class="item">
       <img src="{{l.product_image.url}}" alt="" height="200px">
-      <span class="fw-bold">{{l.title}}</span><br><span class="fs-5">{{l.discounted_price}}</span>
+      <span class="fw-bold">{{l.title}}</span><br><span class="fs-5">{{l.discounted_price}}</span><br>
+      <span class="fs-5">Product_ID : {{l.id}}</span>
     </div></a>{% endfor %}
   </div>
 </div>
