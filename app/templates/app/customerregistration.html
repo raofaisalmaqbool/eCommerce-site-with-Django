@@ -10,27 +10,18 @@
    <hr>
 
    <form action="" method="post" novalidate class="shadow p-5">
+      {% if messages %}
+         {% for message in messages %}
+            <p {% if message.tags %} class="alert alert-{{message.tags}} mb-5" {% endif %}>{{message}}</p>
+         {% endfor %}
+      {% endif %}
       {% csrf_token %}
-    <div class="mb-3">
-     <label for="inputEmail4" class="form-label">Email</label>
-     <input type="email" class="form-control" id="email">
-     <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
-    <div class="mb-3">
-      <label for="inputName" class="form-label">Name</label>
-      <input type="text" class="form-control" id="name">
-     </div>
-    <div class="mb-3">
-     <label for="inputPassword1" class="form-label">Password</label>
-     <input type="password" class="form-control" id="password">
-    </div>
-    <div class="mb-3">
-     <label for="inputPassword2" class="form-label">Confirm Password</label>
-     <input type="password" class="form-control" id="password2">
-    </div>
-    <div class="text-end">
-     <button type="button" class="btn btn-danger">Submit</button>
-    </div>
+      {% for fm in form %}
+         <div class="form-group mb-3">
+            {{fm.label_tag}}<br>{{fm}}<small class="text-danger">{{fm.errors|striptags}}</small>
+         </div>
+      {% endfor %}
+      <input type="submit" value="Submit" class="btn btn-primary">
     <br>
     <div class="text-center text-primary fw-bold"><small>Existing User ? <a href="{% url 'login' %}"
        class="text-danger">Login Now</a> </small></div>

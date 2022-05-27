@@ -2,8 +2,9 @@ from unicodedata import category
 from django.shortcuts import render
 from django.views import View
 from .models import Cart, Product, OrderPlaced, Customer
-import requests
 import json
+from django.contrib import messages
+from .forms import CustomerRegistrationFrom, UserCreationForm
 
 # def home(request):
 #  return render(request, 'app/home.html')
@@ -58,8 +59,19 @@ def mobile(request, data=None):
 def login(request):
  return render(request, 'app/login.html')
 
-def customerregistration(request):
- return render(request, 'app/customerregistration.html')
+# def customerregistration(request):
+#  return render(request, 'app/customerregistration.html')
+class CustomerRegistrationView(View):
+    def get(self, request):
+        form = CustomerRegistrationFrom()
+        return render(request, 'app/customerregistration.html', {'form':form})
+
+    def post(self, request):
+        form = CustomerRegistrationFrom(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "User Registration Successfull!")
+        return render(request, 'app/customerregistration.html', {'form':form})
 
 def checkout(request):
  return render(request, 'app/checkout.html')
