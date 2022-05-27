@@ -2,6 +2,8 @@ from unicodedata import category
 from django.shortcuts import render
 from django.views import View
 from .models import Cart, Product, OrderPlaced, Customer
+import requests
+import json
 
 # def home(request):
 #  return render(request, 'app/home.html')

@@ -1,8 +1,7 @@
 from sre_constants import CATEGORY
 from statistics import quantiles
 from django.db import models
-# from django.contrib.auth.models import User
-from account.models import User
+from django.contrib.auth.models import User
 from django.core.validators import MaxLengthValidator, MinLengthValidator
 
 
