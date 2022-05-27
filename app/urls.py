@@ -1,3 +1,4 @@
+from re import template
 from django.conf import settings
 from django.urls import path
 from app import views
@@ -22,8 +23,9 @@ urlpatterns = [
     # path('login/', views.login, name='login'),
     path('accounts/login/', auth_views.LoginView.as_view(template_name='app/login.html', authentication_form=LoginForm), name='login'),
     # path('registration/', views.customerregistration, name='customerregistration'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
-    path('passwordchange/', auth_views.PasswordChangeView.as_view(template_name='app/passwordchange.html', form_class=MyPasswordChangeForm), name='passwordchange'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'), 
+    path('passwordchange/', auth_views.PasswordChangeView.as_view(template_name='app/passwordchange.html', form_class=MyPasswordChangeForm, success_url='/passwordchangedone/'), name='passwordchange'),
+    path('passwordchangedone/', auth_views.PasswordChangeView.as_view(template_name='app/profile.html'), name='passwordchangedone'),
     path('registration/', views.CustomerRegistrationView.as_view(), name='customerregistration'),
     path('checkout/', views.checkout, name='checkout'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
