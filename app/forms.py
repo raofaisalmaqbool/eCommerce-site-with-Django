@@ -1,7 +1,7 @@
-from dataclasses import fields
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UsernameField, AuthenticationForm
 from django.contrib.auth.models import User
+from django.utils.translation import gettext, gettext_lazy as _
 
 class CustomerRegistrationFrom(UserCreationForm):
     password1= forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class':'form_control'}))
@@ -13,3 +13,7 @@ class CustomerRegistrationFrom(UserCreationForm):
         labels = {'email':'Email'} 
         widgets = {'username':forms.TextInput(attrs={'class':'form-control'})}
 
+
+class LoginForm(AuthenticationForm):
+    username = UsernameField(widget=forms.TextInput(attrs={'autofocus':True, 'class':'form-control'}))
+    password: forms.Field = forms.CharField(label=_("Password"), strip=False, widget=forms.PasswordInput(attrs={'autocomlete':'current-password', 'class':'form-control'}))

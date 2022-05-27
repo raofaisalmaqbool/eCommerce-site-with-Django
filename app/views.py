@@ -56,8 +56,8 @@ def mobile(request, data=None):
         mobile = Product.objects.filter(category='M').filter(discounted_price__gt=20000)
     return render(request, 'app/mobile.html', {'mobile':mobile})
 
-def login(request):
- return render(request, 'app/login.html')
+# def login(request):
+#  return render(request, 'app/login.html')
 
 # def customerregistration(request):
 #  return render(request, 'app/customerregistration.html')
