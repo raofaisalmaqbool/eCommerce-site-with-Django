@@ -28,7 +28,11 @@ class ProductDetailView(View):
         return render(request, 'app/productdetail.html', {'product':product})
 
 def add_to_cart(request):
- return render(request, 'app/addtocart.html')
+    user = request.user
+    product_id = request.GET.get('prod_id')
+    product = Product.objects.get(id = product_id)
+    Cart(user=user, product=product).save()
+    return render(request, 'app/addtocart.html')
 
 def buy_now(request):
  return render(request, 'app/buynow.html')
@@ -54,8 +58,11 @@ class ProfileView(View):
             reg.save()
             messages.success(request, 'Congratulation !! Profile Updated')
         return render(request, 'app/profile.html', {'form':form, 'active':'btn-primary'})
+
+
 def address(request):
- return render(request, 'app/address.html')
+    addre = Customer.objects.filter(user = request.user)
+    return render(request, 'app/address.html', {'addre':addre, 'active':'btn-primary'})
 
 def orders(request):
  return render(request, 'app/orders.html')
