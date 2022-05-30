@@ -1,5 +1,5 @@
 from unicodedata import category
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import View
 from .models import Cart, Product, OrderPlaced, Customer
 import json
@@ -32,7 +32,13 @@ def add_to_cart(request):
     product_id = request.GET.get('prod_id')
     product = Product.objects.get(id = product_id)
     Cart(user=user, product=product).save()
-    return render(request, 'app/addtocart.html')
+    return redirect('/cart')
+
+def show_cart(request):
+    if request.user.is_authenticated:
+        user = request.user
+        cart = Cart.objects.filter(user=user)
+        return render(request, 'app/addtocart.html', {'carts':cart})
 
 def buy_now(request):
  return render(request, 'app/buynow.html')
