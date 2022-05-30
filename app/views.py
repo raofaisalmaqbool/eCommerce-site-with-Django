@@ -4,7 +4,7 @@ from django.views import View
 from .models import Cart, Product, OrderPlaced, Customer
 import json
 from django.contrib import messages
-from .forms import CustomerRegistrationFrom, UserCreationForm
+from .forms import CustomerProfileForm, CustomerRegistrationFrom, UserCreationForm
 
 # def home(request):
 #  return render(request, 'app/home.html')
@@ -33,9 +33,27 @@ def add_to_cart(request):
 def buy_now(request):
  return render(request, 'app/buynow.html')
 
-def profile(request):
- return render(request, 'app/profile.html')
+# def profile(request):
+#  return render(request, 'app/profile.html')
 
+class ProfileView(View):
+    def get(self, request):
+        form = CustomerProfileForm()
+        return render(request, 'app/profile.html', {'form':form, 'active':'btn-primary'})
+
+    def post(self, request):
+        form = CustomerProfileForm(request.POST)
+        if form.is_valid():
+            usr = request.user
+            name = form.cleaned_data['name']
+            locality = form.cleaned_data['locality']
+            city = form.cleaned_data['city']
+            state = form.cleaned_data['state']
+            zipcode = form.cleaned_data['zipcode']
+            reg = Customer(user=usr, name=name, locality=locality, city=city, state=state, zipcode=zipcode)
+            reg.save()
+            messages.success(request, 'Congratulation !! Profile Updated')
+        return render(request, 'app/profile.html', {'form':form, 'active':'btn-primary'})
 def address(request):
  return render(request, 'app/address.html')
 
