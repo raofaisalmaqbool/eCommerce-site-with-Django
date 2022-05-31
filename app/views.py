@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.contrib import messages
 from .forms import CustomerProfileForm, CustomerRegistrationFrom, UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 # def home(request):
 #  return render(request, 'app/home.html')
@@ -33,9 +34,12 @@ class ProductView(View):
 class ProductDetailView(View):
     def get(self, request, pk):
         product = Product.objects.get(pk=pk)
-        return render(request, 'app/productdetail.html', {'product': product})
+        item_inCard = False
+        if request.user.is_authenticated:
+            item_inCard = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
+        return render(request, 'app/productdetail.html', {'product': product, 'item_inCard':item_inCard})
 
-
+@login_required
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
@@ -43,7 +47,7 @@ def add_to_cart(request):
     Cart(user=user, product=product).save()
     return redirect('/cart')
 
-
+@login_required
 def show_cart(request):
     if request.user.is_authenticated:
         user = request.user
@@ -63,7 +67,7 @@ def show_cart(request):
 
         return render(request, 'app/addtocart.html', {'carts': cart, 'total_amount': total_amount, 'shipping_amount': shipping_amount, 'amount': amount})
 
-
+@login_required
 def plus_cart(request):
     if request.method == 'GET':
         user = request.user
@@ -87,7 +91,7 @@ def plus_cart(request):
         }
         return JsonResponse(data)
 
-
+@login_required
 def minus_cart(request):
     if request.method == 'GET':
         user = request.user
@@ -111,7 +115,7 @@ def minus_cart(request):
         }
         return JsonResponse(data)
 
-
+@login_required
 def remove_cart(request):
     if request.method == 'GET':
         user = request.user
@@ -132,7 +136,7 @@ def remove_cart(request):
         }
         return JsonResponse(data)
 
-
+@login_required
 def buy_now(request):
     return render(request, 'app/buynow.html')
 
@@ -160,12 +164,12 @@ class ProfileView(View):
             messages.success(request, 'Congratulation !! Profile Updated')
         return render(request, 'app/profile.html', {'form': form, 'active': 'btn-primary'})
 
-
+@login_required
 def address(request):
     addre = Customer.objects.filter(user=request.user)
     return render(request, 'app/address.html', {'addre': addre, 'active': 'btn-primary'})
 
-
+@login_required
 def orders(request):
     op = OrderPlaced.objects.filter(user=request.user)
     return render(request, 'app/orders.html', {'order_placed': op})
@@ -206,7 +210,7 @@ class CustomerRegistrationView(View):
             messages.success(request, "User Registration Successfull!")
         return render(request, 'app/customerregistration.html', {'form': form})
 
-
+@login_required
 def checkout(request):
     user = request.user
     add = Customer.objects.filter(user=user)
@@ -224,7 +228,7 @@ def checkout(request):
 
     return render(request, 'app/checkout.html', {'add': add, 'total_amount': total_amount, 'cart_items': cart_items})
 
-
+@login_required
 def payment_done(request):
     user = request.user
     custid = request.GET.get('custid')
