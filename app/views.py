@@ -1,4 +1,5 @@
 from itertools import product
+from statistics import quantiles
 from unicodedata import category
 from django.shortcuts import redirect, render
 from django.views import View
@@ -117,13 +118,11 @@ def remove_cart(request):
             tempamount = (p.quantity * p.product.discounted_price)
             amount += tempamount
             shipping_amount = 70.0
-
         data = {
             'amount': amount,
             'total_amount':amount + shipping_amount
         }
         return JsonResponse(data)
-
 
 def buy_now(request):
  return render(request, 'app/buynow.html')
@@ -190,4 +189,29 @@ class CustomerRegistrationView(View):
         return render(request, 'app/customerregistration.html', {'form':form})
 
 def checkout(request):
- return render(request, 'app/checkout.html')
+    user = request.user
+    add = Customer.objects.filter(user=user)
+    cart_items = Cart.objects.filter(user=user)
+    amount = 0.0
+    shipping_amount = 0.0
+    total_amount = 0.0
+    cart_product = [p for p in Cart.objects.all() if p.user==user]
+    if cart_product:
+        for p in cart_product:
+            tempamount = (p.quantity * p.product.discounted_price)
+            amount += tempamount
+            shipping_amount = 70.0
+        total_amount = amount + shipping_amount
+
+    return render(request, 'app/checkout.html', {'add':add, 'total_amount':total_amount, 'cart_items':cart_items})
+
+
+def payment_done(request):
+    user = request.user
+    custid = request.GET.get('custid')
+    customer = Customer.objects.get(id=custid)
+    cart = Cart.objects.filter(user=user)
+    for c in cart:
+        OrderPlaced(user=user, customer=customer, product=c.product, quantity=c.quantity).save()
+        c.delete()
+    return redirect("orders")
